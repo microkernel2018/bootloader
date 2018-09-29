@@ -84,7 +84,7 @@ boot2:
     add ebx,2
     jmp .loop
 haltz:
-hello: db "Hello world!",0
+hello: db "Entered the first stage of bootloader!",0
 
 boot_stack_top equ 0x90000
 
