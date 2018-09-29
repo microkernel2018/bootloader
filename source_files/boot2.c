@@ -6,7 +6,7 @@ __asm__("cli\n");
 
 void boot_main(void){
 
-  char string[] = "Entered the first stage of bootloader!";
+  char string[] = "Entered the second stage of bootloader!";
   print_string(string);
 
 
