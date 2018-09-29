@@ -78,18 +78,17 @@ boot2:
 .loop:
     lodsb
     or al,al
-    jz haltz
+    jz .done
     or eax,0x0100
     mov word [ebx], ax
     add ebx,2
     jmp .loop
-haltz:
-hello: db "Hello world!",0
-
+.done:
 boot_stack_top equ 0x90000
+    mov esp, boot_stack_top
+    jmp boot_main
 
-mov esp,boot_stack_top
-jmp boot_main
+hello: db "Hello world!",0
 
 times 510 -($-$$) db 0
 dw 0xaa55

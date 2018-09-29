@@ -1,4 +1,3 @@
-__asm__("cli\n");
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
