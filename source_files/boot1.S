@@ -1,3 +1,4 @@
+.code16
 xorw %ax,%ax
 jmp 0x0000:boot
 
@@ -63,6 +64,7 @@ disk: .byte 0x0
 MISMATCH: "CODE_SEG equ gdt_code - gdt_start"
 MISMATCH: "DATA_SEG equ gdt_data - gdt_start"
 
+.code32
 boot2: 
     movw $DATA_SEG, %ax
     movw %ax,%ds
