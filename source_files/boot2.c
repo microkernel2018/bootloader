@@ -16,7 +16,7 @@ static void print_string(char* string){
 
 void boot_main(void){
 
-  char string[] = "Now Entered The Kernel Program!";
+  char string[] = "Now Entered The Second Stage Program!";
   print_string(string);
 
 
