@@ -1,6 +1,6 @@
 .code16
 xorw %ax,%ax
-jmp 0x0000:boot
+jmp $0x0000,$boot
 
 .extern boot_main
 
@@ -30,11 +30,11 @@ boot:
 
     cli
 
-MISMATCH: "    lgdt [gdt_pointer] "
-    movl $cr0, %eax
+    lgdt ($gdt_pointer)
+    movl %cr0, %eax
     orl $0x1,%eax # set the protected mode bit on special CPU reg cr0
-    movl %eax, $cr0
-    jmp CODE_SEG:boot2 # long jump to the code segment
+    movl %eax, %cr0
+    jmp $CODE_SEG, $boot2 # long jump to the code segment
 
 
 gdt_start: 
@@ -57,12 +57,12 @@ gdt_end:
 
 
 gdt_pointer: 
-MISMATCH: "    dw gdt_end - gdt_start"
-MISMATCH: "    dd gdt_start"
+#MISMATCH: "    dw gdt_end - gdt_start"
+#MISMATCH: "    dd gdt_start"
 
 disk: .byte 0x0
-MISMATCH: "CODE_SEG equ gdt_code - gdt_start"
-MISMATCH: "DATA_SEG equ gdt_data - gdt_start"
+.equ CODE_SEG, gdt_code - gdt_start
+.equ DATA_SEG, gdt_data - gdt_start
 
 .code32
 boot2: 
@@ -80,7 +80,7 @@ boot2.loop:
     orb %al,%al
     jz boot2.done
     orl $0x0100,%eax
-MISMATCH: "    mov word [ebx], ax"
+    movb %al, (%ebx)
     addl $2,%ebx
     jmp boot2.loop
 boot2.done: 
@@ -88,18 +88,18 @@ boot2.done:
     movl $boot_stack_top, %esp
     jmp boot_main
 
-MISMATCH: "hello: db "Hello world!",0"
+#MISMATCH: "hello: db "Hello world!",0"
 
-MISMATCH: "times 510 -($-$$) db 0"
+#MISMATCH: "times 510 -($-$$) db 0"
 .word 0xaa55
 
-.equ               boot_stack_bottom:, $
+.equ               boot_stack_bottom, $
 
-WARNING, Line 33: no syntax match: "    lgdt [gdt_pointer] "
-WARNING, Line 60: no syntax match: "    dw gdt_end - gdt_start"
-WARNING, Line 61: no syntax match: "    dd gdt_start"
-WARNING, Line 64: no syntax match: "CODE_SEG equ gdt_code - gdt_start"
-WARNING, Line 65: no syntax match: "DATA_SEG equ gdt_data - gdt_start"
-WARNING, Line 83: no syntax match: "    mov word [ebx], ax"
-WARNING, Line 91: no syntax match: "hello: db "Hello world!",0"
-WARNING, Line 93: no syntax match: "times 510 -($-$$) db 0"
+#WARNING, Line 33: no syntax match: "    lgdt [gdt_pointer] "
+#WARNING, Line 60: no syntax match: "    dw gdt_end - gdt_start"
+#WARNING, Line 61: no syntax match: "    dd gdt_start"
+#WARNING, Line 64: no syntax match: "CODE_SEG equ gdt_code - gdt_start"
+#WARNING, Line 65: no syntax match: "DATA_SEG equ gdt_data - gdt_start"
+#WARNING, Line 83: no syntax match: "    mov word [ebx], ax"
+#WARNING, Line 91: no syntax match: "hello: db "Hello world!",0"
+#WARNING, Line 93: no syntax match: "times 510 -($-$$) db 0"
