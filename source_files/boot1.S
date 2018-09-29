@@ -1,4 +1,5 @@
 .code16
+_start:	
 xorw %ax,%ax
 jmp $0x0000,$boot
 
@@ -57,8 +58,8 @@ gdt_end:
 
 
 gdt_pointer: 
-#MISMATCH: "    dw gdt_end - gdt_start"
-#MISMATCH: "    dd gdt_start"
+.word gdt_end - gdt_start
+.hword gdt_start
 
 disk: .byte 0x0
 .equ CODE_SEG, gdt_code - gdt_start
@@ -88,18 +89,11 @@ boot2.done:
     movl $boot_stack_top, %esp
     jmp boot_main
 
-#MISMATCH: "hello: db "Hello world!",0"
+hello: .string "Hello world!"
 
-#MISMATCH: "times 510 -($-$$) db 0"
+	# https://stackoverflow.com/questions/47859273/calculating-padding-length-with-gas-att-directives-for-a-boot-sector
+#.space 510-(.-_start)
+.org	510
 .word 0xaa55
 
 .equ               boot_stack_bottom, $
-
-#WARNING, Line 33: no syntax match: "    lgdt [gdt_pointer] "
-#WARNING, Line 60: no syntax match: "    dw gdt_end - gdt_start"
-#WARNING, Line 61: no syntax match: "    dd gdt_start"
-#WARNING, Line 64: no syntax match: "CODE_SEG equ gdt_code - gdt_start"
-#WARNING, Line 65: no syntax match: "DATA_SEG equ gdt_data - gdt_start"
-#WARNING, Line 83: no syntax match: "    mov word [ebx], ax"
-#WARNING, Line 91: no syntax match: "hello: db "Hello world!",0"
-#WARNING, Line 93: no syntax match: "times 510 -($-$$) db 0"
