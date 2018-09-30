@@ -10,7 +10,7 @@ OBJS:=object_files/boot1.o object_files/boot2.o
 CPPFLAGS:=-Wall -Wextra
 
 object_files/boot1.o: source_files/boot1.S
-	nasm -f elf $< -o $@
+	i686-elf-as $< -o $@
 
 object_files/boot2.o: source_files/boot2.c
 	i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
