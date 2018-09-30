@@ -9,7 +9,7 @@ run: bootloader_files/bootloader.bin
 OBJS:=object_files/boot1.o object_files/boot2.o
 CPPFLAGS:=-Wall -Wextra
 
-object_files/boot1.o: source_files/boot1.asm
+object_files/boot1.o: source_files/boot1.S
 	nasm -f elf $< -o $@
 
 object_files/boot2.o: source_files/boot2.c
