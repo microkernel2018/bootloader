@@ -3,28 +3,25 @@ OUTPUT_FORMAT("binary")
 
 SECTIONS {
   . = 0x7c00;
-  .boot :
-  {
-    *(.boot)
+
+  .boot : {
+    boot2.o(*text)
   }
 
-  .kernel : AT(0x7e00)  /* place immediately after the boot sector */
-  {
-    *(.text)
-    *(.rodata)
-    *(.data)
-    _bss_start = .;
-    *(.bss)
-    *(COMMON)
-    _bss_end = .;
-  }
-  kernel_sectors = (SIZEOF(.kernel) + 511) / 512;
+  .boot_sig : AT(0x7dfe) { SHORT(0xaa55) }
 
-  /DISCARD/ : {
-        *(.eh_frame)
-  }
 
-  .padding : AT(0x81fe) {
-    SHORT(0x0000)
+  . = 0x7e00;
+  .kernel : AT(0x7e00){
+    kernel.o(*text)
+    kernel.o(*rodata)
+    kernel.o(*data)
+    kernel.o(*bss)
   }
+    /DISCARD/ : {
+      *(.eh_frame)
+    }
+
+  .padding : AT(0x7ffe) { SHORT(0x0000) }
+
 }

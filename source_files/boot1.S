@@ -1,13 +1,12 @@
 .code16
-_start:	
-xorw %ax,%ax
-jmp $0x0000,$boot
+xor %ax,%ax
+ljmp $0x0000,$boot
 
 .extern boot_main
 
 .global boot
-boot: 
-    movb %dl,disk
+boot:
+    mov %dl,disk
     cli
     movw $0x9000,%ax
     movw %ax,%ss
@@ -31,69 +30,72 @@ boot:
 
     cli
 
-    lgdt ($gdt_pointer)
-    movl %cr0, %eax
-    orl $0x1,%eax # set the protected mode bit on special CPU reg cr0
-    movl %eax, %cr0
-    jmp $CODE_SEG, $boot2 # long jump to the code segment
+    lgdt gdt_pointer
+    mov %cr0, %eax
+    or $0x1,%eax # set the protected mode bit on special CPU reg cr0
+    mov %eax, %cr0
+    ljmp $0x8,$boot2 # long jump to the code segment
 
 
-gdt_start: 
+gdt_start:
     .quad 0x0
-gdt_code: 
+gdt_code:
     .word 0xFFFF
     .word 0x0
     .byte 0x0
     .byte 0b10011010
     .byte 0b11001111
     .byte 0x0
-gdt_data: 
+gdt_data:
     .word 0xFFFF
     .word 0x0
     .byte 0x0
     .byte 0b10010010
     .byte 0b11001111
     .byte 0x0
-gdt_end: 
+gdt_end:
 
 
-gdt_pointer: 
-.word gdt_end - gdt_start
-.hword gdt_start
+gdt_pointer:
+  .word gdt_end - gdt_start
+  .long gdt_start
 
 disk: .byte 0x0
 .equ CODE_SEG, gdt_code - gdt_start
 .equ DATA_SEG, gdt_data - gdt_start
 
 .code32
-boot2: 
-    movw $DATA_SEG, %ax
-    movw %ax,%ds
-    movw %ax,%es
-    movw %ax,%fs
-    movw %ax,%gs
-    movw %ax,%ss
+boot2:
+    mov $DATA_SEG, %ax
+    mov %ax,%ds
+    mov %ax,%es
+    mov %ax,%fs
+    mov %ax,%gs
+    mov %ax,%ss
 
-    movl $hello, %esi
-    movl $0xb8000,%ebx
-boot2.loop: 
-    lodsb
-    orb %al,%al
-    jz boot2.done
-    orl $0x0100,%eax
-    movb %al, (%ebx)
-    addl $2,%ebx
-    jmp boot2.loop
-boot2.done: 
-.equ           boot_stack_top, 0x90000
-    movl $boot_stack_top, %esp
-    jmp boot_main
+movl $0xb8000,%edx
+movl $hello,%ebx
 
-hello: .string "Hello world!"
+boot2.loop:
+  movb (%ebx),%al
+  orb %al,%al
+  jz boot2.done
+  movb $0x3,%ah
+  movl %eax,(%edx)
+  add $1,%ebx
+  add $2,%edx
+  jmp boot2.loop
 
-	# https://stackoverflow.com/questions/47859273/calculating-padding-length-with-gas-att-directives-for-a-boot-sector
-#.space 510-(.-_start)
-.org	510
-.word 0xaa55
+boot2.done:
 
-.equ               boot_stack_bottom, $
+.equ boot_stack_top, 0x90000
+  mov $boot_stack_top,%esp
+  jmp boot_main
+
+loop_forever:
+  jmp loop_forever
+
+  cli
+  hlt
+
+hello: .ascii "Hello world!\0"
