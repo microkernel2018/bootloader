@@ -1,7 +1,6 @@
 .code16
 
 .extern boot_main
-.global boot
 
 xor %ax,%ax
 ljmp $0x0000,$boot

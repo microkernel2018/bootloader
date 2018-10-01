@@ -1,4 +1,4 @@
-ENTRY(boot)
+ENTRY(_start)
 OUTPUT_FORMAT("binary")
 
 SECTIONS {
