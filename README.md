@@ -1,2 +1,8 @@
 # bootloader
-This project is intended to be a GRUB like multi-boot bootloader. Currently it does not support multi-boot. At this point it is a two stage bootloader. The second stage loads after switching on to Protected mode. The goal here is to enable the bootloader to read multi-boot headers. This version was compiled with a cross-compiler with no specific OS toolchain.
+
+
+<pre>
+$ make                    # Clean all the output files and re-build them.
+$ make qemu-boot-hdd      # Boot qemu from the hard-disk drive (bootlader.bin).
+$ make run-qemu           # Boot qemu from the CDROM drive (mk2018.iso).
+<pre>
