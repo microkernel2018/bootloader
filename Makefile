@@ -28,20 +28,20 @@ clean:
 	rm -f object_files/cd_boot1.o
 
 object_files/boot1.o: source_files/boot1.S
-	i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
+	i686-elf-as $< -o $@
 
 object_files/boot2.o: source_files/boot2.c
-	i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
+	i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
 
 bootloader_files/bootloader.bin: $(OBJS)
-	i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld $(OBJS) -o $@ -T linker_files/linker.ld
+	i686-elf-ld $(OBJS) -o $@ -T linker_files/linker.ld
 
 
 object_files/cd_boot1.o: source_files/cd_boot1.S
-	i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
+	i686-elf-as $< -o $@
 
 bootloader_files/cd_bootloader.bin: $(OBJS2)
-	i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld $(OBJS2) -o $@ -T linker_files/iso_linker.ld
+	i686-elf-ld $(OBJS2) -o $@ -T linker_files/iso_linker.ld
 
 iso:
 	xorriso -as mkisofs \
