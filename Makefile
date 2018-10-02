@@ -15,7 +15,7 @@ qemu-boot-cd:bootloader_files/mk2018.iso
 
 OBJS:=./object_files/boot1.o ./object_files/boot2.o
 OBJS2:=./object_files/cd_boot1.o ./object_files/boot2.o
-ISODEST ?= $(shell pwd)/bootloader_files/mk2018.iso
+ISODEST ?= ./bootloader_files/mk2018.iso
 
 CPPFLAGS:=-Wall -Wextra
 
