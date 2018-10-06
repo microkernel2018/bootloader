@@ -14,5 +14,5 @@ $ make qemu-boot-cd       # Boot qemu from the CDROM drive (mk2018.iso).
 
 ## Binary to ISO conversion
 
-* The convertion of the executable binary file into ISO image was inspired from the proposal-template repo.
+* The conversion of the executable binary file into ISO image was inspired from the proposal-template repo.
 <a href="https://github.com/microkernel2018/proposal-template">Proposal-Template<a> 
