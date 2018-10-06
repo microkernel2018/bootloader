@@ -12,7 +12,7 @@ $ make qemu-boot-cd       # Boot qemu from the CDROM drive (mk2018.iso).
 * You will need an i686 GCC and binutils toolchain. The osdev-toolchains repo builds this.
 * You will also need xorriso to build the CD image.
 
-## Code origin
+## Binary to ISO conversion
 
-* The code-chunk for converting the executable binary file into ISO image was taken from the proposal-template repo.
+* The convertion of the executable binary file into ISO image was inspired from the proposal-template repo.
 <a href="https://github.com/microkernel2018/proposal-template">Proposal-Template<a> 
