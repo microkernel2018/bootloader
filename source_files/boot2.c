@@ -19,6 +19,6 @@ void boot_main(void){
   print_string(string);
 
 
-for(;;);
+  for(;;);
 
 }
