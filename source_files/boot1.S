@@ -73,29 +73,9 @@ boot2:
     mov %ax,%gs
     mov %ax,%ss
 
-movl $0xb8000,%edx
-movl $hello,%ebx
-
-boot2.loop:
-    movb (%ebx),%al
-    orb %al,%al
-    jz boot2.done
-    movb $0x3,%ah
-    movl %eax,(%edx)
-    add $1,%ebx
-    add $2,%edx
-    jmp boot2.loop
-
-boot2.done:
-
-.equ boot_stack_top, 0x90000
+    .equ boot_stack_top, 0x90000
     mov $boot_stack_top,%esp
     jmp boot_main
 
-loop_forever:
-    jmp loop_forever
-
     cli
     hlt
-
-hello: .ascii "Hello world!\0"
