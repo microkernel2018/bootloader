@@ -20,33 +20,31 @@ ISODEST ?= ./bootloader_files/mk2018.iso
 CPPFLAGS:=-Wall -Wextra
 
 clean:
-	rm -f bootloader_files/bootloader.bin
-	rm -f bootloader_files/cd_bootloader.bin
-	rm -f bootloader_files/mk2018.iso
-	rm -f object_files/boot1.o
-	rm -f object_files/boot2.o
-	rm -f object_files/cd_boot1.o
+	rm -rf bootloader_files
+	rm -rf object_files
+	mkdir bootloader_files
+	mkdir object_files
 
 object_files/boot1.o: source_files/boot1.S
-	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
+	i686-elf-as $< -o $@
 
 object_files/boot2.o: source_files/boot2.c
-	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
+	i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
 
 object_files/enable_paging.o: source_files/enable_paging.S
-	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
+	i686-elf-as $< -o $@
 
 object_files/Kernel.o: source_files/Kernel.c
-	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
+	i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
 
 bootloader_files/bootloader.bin: $(OBJS)
-	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld $(OBJS) -o $@ -T linker_files/linker.ld
+	i686-elf-ld $(OBJS) -o $@ -T linker_files/linker.ld
 
 object_files/cd_boot1.o: source_files/cd_boot1.S
-	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
+	i686-elf-as $< -o $@
 
 bootloader_files/cd_bootloader.bin: $(OBJS2)
-	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld $(OBJS2) -o $@ -T linker_files/iso_linker.ld
+	i686-elf-ld $(OBJS2) -o $@ -T linker_files/iso_linker.ld
 
 iso:
 	xorriso -as mkisofs \
