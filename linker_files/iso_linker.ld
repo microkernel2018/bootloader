@@ -1,10 +1,12 @@
 ENTRY(_start)
 OUTPUT_FORMAT("binary")
 
-SECTIONS {
-  . = 0x800;
+/*No relocation*/
 
-	.text BLOCK(0x800) : ALIGN(0x800) {
+SECTIONS {
+  . = 0x7c00;
+
+	.text :{
 		*(.sector0)
 		*(.text)
 	}
@@ -13,18 +15,31 @@ SECTIONS {
     ./object_files/cd_boot1.o(*text)
   }
 
-  .boot_sig : AT(0x7dfe) { SHORT(0xaa55) }
-
   .boot2 : {
     ./object_files/boot2.o(*text)
     ./object_files/boot2.o(*rodata)
     ./object_files/boot2.o(*data)
     ./object_files/boot2.o(*bss)
   }
+
+  .enable_paging : {
+    ./object_files/enable_paging.o(*text)
+    ./object_files/enable_paging.o(*rodata)
+    ./object_files/enable_paging.o(*data)
+    ./object_files/enable_paging.o(*bss)
+  }
+
+  .Kernel : {
+    ./object_files/Kernel.o(*text)
+    ./object_files/Kernel.o(*rodata)
+    ./object_files/Kernel.o(*data)
+    ./object_files/Kernel.o(*bss)
+  }
+
     /DISCARD/ : {
       *(.eh_frame)
     }
 
-  .padding : AT(0x7ffe) { SHORT(0x0000) }
+  /*.padding : AT(0x7ffe) { SHORT(0x0000) }*/
 
 }

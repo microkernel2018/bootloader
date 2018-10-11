@@ -1,23 +1,17 @@
 .code16
-
 .extern boot_main
 
-xor %ax,%ax
-ljmp $0x0000,$boot
+movw $0x9000,%ax
+movw %ax,%ss
+movw %ax,%sp
+movw %ax,%bp
 
-################################################
+jmp boot
+
 .section .sector0
 .global _start
 
-.code16
-
 _start:
-	# Jump past the Boot Info Table.
-	# Note: We don't use the "boot" label, since addresses understood
-	# by the linker start from 0x0800, while we have been loaded to 0x7C00
-	# and will relocate to 0x0800 later.
-	ljmp $0x0000, $0x7C40
-
 	.skip 8 - (. - _start), 0x00
 
 bootinfo:
@@ -32,29 +26,9 @@ boot:
 	cli
 	cld
 
-	# Set stack to 0x1000:0x0000. Pushing a word to it will cause it
-	# to wrap up to 0x1000:0xFFFE.
-	movw $0x1000, %ax
-	movw %ax, %ss
-	xorw %sp, %sp
-
-	#Relocate (2048 bytes) from 0x0000:0x7C00 to 0x0000:0x0800.
-	xorw %ax, %ax
-	movw %ax, %ds
-	movw $0x7C00, %si
-
-	movw %ax, %es
-	movw $0x0800, %di
-
-	movw $2048, %cx
-
-	rep movsb
-
 	# Jump to bootx
 	ljmp $0x0000, $bootx
 
-
-################################################
 
 bootx:
     mov %dl,disk
@@ -143,10 +117,7 @@ boot2.done:
   mov $boot_stack_top,%esp
   jmp boot_main
 
-loop_forever:
-  jmp loop_forever
+cli
+hlt
 
-  cli
-  hlt
-
-hello: .ascii "Hello world!\0"
+hello: .ascii "HW\0"

@@ -18,10 +18,25 @@ SECTIONS {
     ./object_files/boot2.o(*data)
     ./object_files/boot2.o(*bss)
   }
+
+  .enable_paging : {
+    ./object_files/enable_paging.o(*text)
+    ./object_files/enable_paging.o(*rodata)
+    ./object_files/enable_paging.o(*data)
+    ./object_files/enable_paging.o(*bss)
+  }
+
+  .Kernel : {
+    ./object_files/Kernel.o(*text)
+    ./object_files/Kernel.o(*rodata)
+    ./object_files/Kernel.o(*data)
+    ./object_files/Kernel.o(*bss)
+  }
+
     /DISCARD/ : {
       *(.eh_frame)
     }
 
-  .padding : AT(0x7ffe) { SHORT(0x0000) }
+  /*.padding : AT(0xffff) { SHORT(0x0000) }*/
 
 }
