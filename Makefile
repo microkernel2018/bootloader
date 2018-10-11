@@ -4,7 +4,7 @@
 .PHONY: run
 .DEFAULT: run
 
-run: clean object_files/cd_boot1.o object_files/boot1.o object_files/boot2.o bootloader_files/cd_bootloader.bin bootloader_files/bootloader.bin iso
+run: clean object_files/cd_boot1.o object_files/boot1.o object_files/boot2.o object_files/enable_paging.o object_files/Kernel.o bootloader_files/cd_bootloader.bin bootloader_files/bootloader.bin iso
 
 
 qemu-boot-hdd:bootloader_files/bootloader.bin
@@ -13,8 +13,8 @@ qemu-boot-hdd:bootloader_files/bootloader.bin
 qemu-boot-cd:bootloader_files/mk2018.iso
 	qemu-system-x86_64 -cdrom bootloader_files/mk2018.iso -no-reboot
 
-OBJS:=./object_files/boot1.o ./object_files/boot2.o
-OBJS2:=./object_files/cd_boot1.o ./object_files/boot2.o
+OBJS:= ./object_files/boot1.o ./object_files/boot2.o ./object_files/enable_paging.o ./object_files/Kernel.o
+OBJS2:=./object_files/cd_boot1.o ./object_files/boot2.o ./object_files/enable_paging.o ./object_files/Kernel.o
 ISODEST ?= ./bootloader_files/mk2018.iso
 
 CPPFLAGS:=-Wall -Wextra
@@ -24,24 +24,29 @@ clean:
 	rm -f bootloader_files/cd_bootloader.bin
 	rm -f bootloader_files/mk2018.iso
 	rm -f object_files/boot1.o
-	rm -f object_files/boot2.o 
+	rm -f object_files/boot2.o
 	rm -f object_files/cd_boot1.o
 
 object_files/boot1.o: source_files/boot1.S
-	i686-elf-as $< -o $@
+	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
 
 object_files/boot2.o: source_files/boot2.c
-	i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
+	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
+
+object_files/enable_paging.o: source_files/enable_paging.S
+	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
+
+object_files/Kernel.o: source_files/Kernel.c
+	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-gcc -m32 -c $< -o $@ -e boot_main -nostdlib -ffreestanding -std=gnu99 -mno-red-zone -fno-exceptions -nostdlib $(CPPFLAGS)
 
 bootloader_files/bootloader.bin: $(OBJS)
-	i686-elf-ld $(OBJS) -o $@ -T linker_files/linker.ld
-
+	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld $(OBJS) -o $@ -T linker_files/linker.ld
 
 object_files/cd_boot1.o: source_files/cd_boot1.S
-	i686-elf-as $< -o $@
+	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-as $< -o $@
 
 bootloader_files/cd_bootloader.bin: $(OBJS2)
-	i686-elf-ld $(OBJS2) -o $@ -T linker_files/iso_linker.ld
+	/home/rakesh/Desktop/cross-compiler/i686-elf-4.9.1-Linux-x86_64/bin/i686-elf-ld $(OBJS2) -o $@ -T linker_files/iso_linker.ld
 
 iso:
 	xorriso -as mkisofs \
